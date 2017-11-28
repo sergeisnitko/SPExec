@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPExec", "SPExec\SPExec.csproj", "{746EAD83-FD70-4E10-A104-66D6ADC1B49B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPExec.Debug", "SPExec.Debug\SPExec.Debug.csproj", "{42A79A57-5EE2-46B8-944F-56FAD300FB64}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{746EAD83-FD70-4E10-A104-66D6ADC1B49B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{746EAD83-FD70-4E10-A104-66D6ADC1B49B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{746EAD83-FD70-4E10-A104-66D6ADC1B49B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{746EAD83-FD70-4E10-A104-66D6ADC1B49B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A79A57-5EE2-46B8-944F-56FAD300FB64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A79A57-5EE2-46B8-944F-56FAD300FB64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A79A57-5EE2-46B8-944F-56FAD300FB64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A79A57-5EE2-46B8-944F-56FAD300FB64}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
