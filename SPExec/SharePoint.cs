@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using Microsoft.SharePoint.Client;
+using Newtonsoft.Json.Linq;
 using SPAuthN;
 using System;
 using System.Collections.Generic;
@@ -19,65 +20,26 @@ namespace SPExec
 
         public static void RunCSOM(string args, SPFunctions Functions)
         {
-            var ConnectionOptions = SPAuth.GetAuth(args);
-
-            var argsArr = args.ModParams().Split(' ');
-            var extoptions = new ExtendedOptions();
-
-            Parser.Default.ParseArguments(argsArr, extoptions);
-
-            dynamic LoadedSettings = Extentions.LoadSettings(extoptions.configPath);
-            extoptions.Options = ConnectionOptions;
-
-            if (LoadedSettings != null)
+            GetParams(args, ExtOptions =>
             {
-                var ExecuteParams = LoadedSettings.executeParams;
-
-                var forcePrompts = (LoadedSettings.forcePrompts != null && LoadedSettings.forcePrompts) || ExecuteParams == null;
-                if (forcePrompts)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write("? ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("Enter the keys of functions to execute with a space like a delimiter");
-                    if (ExecuteParams != null)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                        Console.Write(" (" + ExecuteParams.ToString() + ")");                        
-                    }
-                    Console.ForegroundColor = ConsoleColor.White;
-
-                    var ConsoleValue = Console.ReadLine();
-                    if (ConsoleValue == null)
-                    {
-                        ConsoleValue = "";
-                    }
-                    LoadedSettings.executeParams = ConsoleValue;
-
-                    Console.ResetColor();
-                    Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
-                }
-
-                string ExecuteParamsString = LoadedSettings.executeParams.ToString();
+                string ExecuteParamsString = ExtOptions.LoadedSettings.custom.executeParams.ToString();
 
                 List<string> FunctionsToExecute = ExecuteParamsString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                ConnectionOptions.SharePointCSOM(ctx =>
+                ExtOptions.SharePointCSOM(ctx =>
                 {
-                    extoptions.Ctx = ctx;
+                    ExtOptions.Ctx = ctx;
 
                     FunctionsToExecute.ForEach(FunctionName =>
                     {
                         var Function = Functions.Where(k => k.Key.ToLower() == FunctionName.ToLower()).FirstOrDefault();
                         if (Function.Value != null)
                         {
-                            Function.Value(extoptions);
+                            Function.Value(ExtOptions);
                         }
                     });
                 });
-
-            }
-
+            });
         }
         public static void RunCSOM(SPFunctions Functions)
         {
@@ -114,13 +76,44 @@ namespace SPExec
             }
         }
 
-        public static void SharePointCSOM(this SPAuthN.Options options, Action<ClientContext> OnSuccess)
+        public static void SharePointCSOM(this ExtendedOptions ExtendedOptions, Action<ClientContext> OnSuccess)
         {
-            using (var clientContext = new ClientContext(options.SiteUrl))
+            using (var clientContext = new ClientContext(ExtendedOptions.Options.SiteUrl))
             {
-                Request.ApplyAuth<WebRequestEventArgs>(clientContext, options);
+                Request.ApplyAuth<WebRequestEventArgs>(clientContext, ExtendedOptions.Options);
 
                 OnSuccess(clientContext);
+            }
+        }
+
+        public static void GetParams(string args, Action<ExtendedOptions> OnSuccess)
+        {
+            var ConnectionOptions = SPAuth.GetAuth(args);
+
+            var argsArr = args.ModParams().Split(' ');
+            var extoptions = new ExtendedOptions();
+
+            Parser.Default.ParseArguments(argsArr, extoptions);
+
+            dynamic LoadedSettings = Extentions.LoadSettings(extoptions.configPath);
+            extoptions.Options = ConnectionOptions;
+
+            if (LoadedSettings != null)
+            {
+                LoadedSettings.custom = LoadedSettings.custom != null ? LoadedSettings.custom : JObject.Parse("{'executeParams': null}");
+                var CustomProperties = LoadedSettings.custom;
+
+                var ExecuteParams = CustomProperties.executeParams;
+
+                var forcePrompts = extoptions.forcePrompts || ExecuteParams == null;
+                if (forcePrompts)
+                {
+                    CustomProperties.executeParams = Extentions.InlineParam("Enter the keys of functions to execute with a space like a delimiter", ExecuteParams.ToString());
+                    Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
+                }
+
+                extoptions.LoadedSettings = LoadedSettings;
+                OnSuccess(extoptions);
             }
         }
     }

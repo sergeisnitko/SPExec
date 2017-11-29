@@ -21,5 +21,7 @@ namespace SPExec
 
         public Options Options { get; set; }
 
+        public dynamic LoadedSettings { get; set; }
+
     }
 }

@@ -19,6 +19,11 @@ namespace SPExec.Debug
                 },
                 { "data", options=>
                     {
+                        var ctx = options.Ctx;
+                        var Web = ctx.Web;
+                        ctx.Load(Web);
+                        ctx.ExecuteQuery();
+
                         var l = "";
                     }
                 },
@@ -59,7 +64,7 @@ namespace SPExec.Debug
                 }
             };
 
-            SharePoint.RunCSOM("--configPath='./configs/private.prod.json' --forcePrompts=true", fun);
+            SharePoint.RunCSOM("--configPath='./configs/private.prod1.json' --forcePrompts=true", fun);
 
             var t = "";
         }

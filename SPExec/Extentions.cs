@@ -14,13 +14,9 @@ namespace SPExec
         {
             Params = Params
                 .Replace("=true", "")
-                .Replace("=false", "")
                 .Replace("='true'", "")
-                .Replace("='false'", "")
                 .Replace("=True", "")
-                .Replace("=False", "")
                 .Replace("='True'", "")
-                .Replace("='False'", "")
                 ;
             return Params;
         }
@@ -33,6 +29,32 @@ namespace SPExec
                 ;
             SettingsFileName = Path.Combine(SharePoint.SystemPath, SettingsFileName);
             return SettingsFileName;
+        }
+
+        public static string InlineParam(string Description, string DefaultValue)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("? ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(Description+" ");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            if (!String.IsNullOrEmpty(DefaultValue.ToString()))
+            {
+                Console.Write("(" + DefaultValue.ToString() + ") ");
+            }
+
+            var ConsoleValue = Console.ReadLine();
+            if (ConsoleValue == null)
+            {
+                ConsoleValue = "";
+            }
+            if (String.IsNullOrEmpty(ConsoleValue)&&!String.IsNullOrEmpty(DefaultValue.ToString()))
+            {
+                ConsoleValue = DefaultValue.ToString();
+            }
+
+            Console.ResetColor();
+            return ConsoleValue;
         }
         public static dynamic LoadSettings(string SettingsFileName)
         {
