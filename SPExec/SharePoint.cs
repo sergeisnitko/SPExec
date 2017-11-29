@@ -28,7 +28,7 @@ namespace SPExec
 
                 ExtOptions.SharePointCSOM(ctx =>
                 {
-                    ExtOptions.Ctx = ctx;
+                    ExtOptions.Context = ctx;
 
                     FunctionsToExecute.ForEach(FunctionName =>
                     {
@@ -104,15 +104,19 @@ namespace SPExec
                 var CustomProperties = LoadedSettings.custom;
 
                 var ExecuteParams = CustomProperties.executeParams;
+                extoptions.LoadedSettings = LoadedSettings;
 
                 var forcePrompts = extoptions.forcePrompts || ExecuteParams == null;
                 if (forcePrompts)
                 {
-                    CustomProperties.executeParams = Extentions.InlineParam("Enter the keys of functions to execute with a space like a delimiter", ExecuteParams.ToString());
+                    CustomProperties.executeParams = Extentions.InlineParam(Extentions.ExecuteParamsDescription, ExecuteParams.ToString());
                     Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
                 }
+                else
+                {
+                    Extentions.EchoParams(extoptions);
+                }
 
-                extoptions.LoadedSettings = LoadedSettings;
                 OnSuccess(extoptions);
             }
         }

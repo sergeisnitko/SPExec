@@ -17,7 +17,7 @@ namespace SPExec
         [Option("forcePrompts")]
         public bool forcePrompts { get; set; }
 
-        public ClientContext Ctx { get; set; }
+        public ClientContext Context { get; set; }
 
         public Options Options { get; set; }
 

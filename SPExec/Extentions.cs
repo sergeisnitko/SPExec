@@ -10,6 +10,8 @@ namespace SPExec
 {
     public static class Extentions
     {
+        public static string ExecuteParamsDescription = "Keys of functions to execute with a space like a delimiter";
+
         public static string ModParams(this string Params)
         {
             Params = Params
@@ -31,30 +33,88 @@ namespace SPExec
             return SettingsFileName;
         }
 
-        public static string InlineParam(string Description, string DefaultValue)
+        public static String GetConsoleValue()
+        {
+            var Value = "";
+            while (true)
+            {
+                ConsoleKeyInfo i = Console.ReadKey(true);
+                if (i.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+                else if (i.Key == ConsoleKey.Backspace)
+                {
+                    if (Value.Length > 0)
+                    {
+                        Value = Value.Substring(0, Value.Length - 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else
+                {
+                    Value += i.KeyChar;
+                    Console.Write(i.KeyChar);
+                }
+            }
+
+            return Value;
+        }
+
+        public static string InlineParam(string Description, string DefaultValue, bool WaitInput=true)
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write("? ");
+            Console.Write(WaitInput ? "? ": "! ");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Description+" ");
-            Console.ForegroundColor = ConsoleColor.Gray;
-            if (!String.IsNullOrEmpty(DefaultValue.ToString()))
+
+            var ConsoleValue = DefaultValue;
+
+            if (WaitInput)
             {
-                Console.Write("(" + DefaultValue.ToString() + ") ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                if (!String.IsNullOrEmpty(DefaultValue.ToString()))
+                {
+                    Console.Write("(" + DefaultValue.ToString() + ") ");
+                }
+
+                ConsoleValue = GetConsoleValue();
+                if (ConsoleValue == null)
+                {
+                    ConsoleValue = "";
+                }
+                if (!String.IsNullOrEmpty(ConsoleValue))
+                {
+                    for (int i = 0, ilen = ConsoleValue.Length; i < ilen; i += 1)
+                    {
+                        Console.Write("\b \b");
+                    }
+                }
+                if (String.IsNullOrEmpty(ConsoleValue) && !String.IsNullOrEmpty(DefaultValue.ToString()))
+                {
+                    ConsoleValue = DefaultValue.ToString();
+                }
             }
 
-            var ConsoleValue = Console.ReadLine();
-            if (ConsoleValue == null)
-            {
-                ConsoleValue = "";
-            }
-            if (String.IsNullOrEmpty(ConsoleValue)&&!String.IsNullOrEmpty(DefaultValue.ToString()))
-            {
-                ConsoleValue = DefaultValue.ToString();
-            }
 
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write(ConsoleValue);
             Console.ResetColor();
+
             return ConsoleValue;
+        }
+
+        public static void EchoParams(ExtendedOptions Options)
+        {
+            Console.Clear();
+            InlineParam("SharePoint URL", Options.LoadedSettings.siteUrl.ToString(), false);
+            Console.WriteLine();
+            InlineParam("Strategy", Options.LoadedSettings.strategy.ToString(), false);
+            Console.WriteLine();
+            InlineParam("User name", Options.LoadedSettings.username.ToString(), false);
+            Console.WriteLine();
+            InlineParam(ExecuteParamsDescription, Options.LoadedSettings.custom.executeParams.ToString(), false);
+            Console.WriteLine();
         }
         public static dynamic LoadSettings(string SettingsFileName)
         {
