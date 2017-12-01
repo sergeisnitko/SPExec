@@ -3,6 +3,7 @@ using Microsoft.SharePoint.Client;
 using SPAuthN;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace SPExec
         public bool forcePrompts { get; set; }
 
         public ClientContext Context { get; set; }
+
+        public Stream Stream { get; set; }
 
         public Options Options { get; set; }
 

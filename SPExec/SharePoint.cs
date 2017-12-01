@@ -18,54 +18,33 @@ namespace SPExec
     {
         public static string SystemPath = HttpUtility.UrlDecode(Path.GetDirectoryName((new System.Uri(Assembly.GetExecutingAssembly().CodeBase)).AbsolutePath));
 
+        public static void Run(string args, SPFunctions Functions)
+        {
+            GetParams(args, ExtOptions =>
+            {
+                ExtOptions.ExecuteMappedFunctions(Functions);
+
+            });
+        }
         public static void RunCSOM(string args, SPFunctions Functions)
         {
             GetParams(args, ExtOptions =>
             {
-                string ExecuteParamsString = ExtOptions.LoadedSettings.custom.executeParams.ToString();
-
-                List<string> FunctionsToExecute = ExecuteParamsString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
                 ExtOptions.SharePointCSOM(ctx =>
                 {
                     ExtOptions.Context = ctx;
 
-                    FunctionsToExecute.ForEach(FunctionName =>
-                    {
-                        var Function = Functions.Where(k => k.Key.ToLower() == FunctionName.ToLower()).FirstOrDefault();
-                        if (Function.Value != null)
-                        {
-                            Function.Value(ExtOptions);
-                        }
-                    });
+                    ExtOptions.ExecuteMappedFunctions(Functions);
                 });
             });
         }
-        public static void RunCSOM(SPFunctions Functions)
+
+        public static void SharePointREST(this ExtendedOptions ExtendedOptions, string RequestUrl, Action<Stream> OnSuccess)
         {
-           
-
-
-            /*var FunctionsToExecute = options.ExecuteParams.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-            FunctionsToExecute.ForEach(FunctionName =>
-            {
-                var Function = Functions.Where(k => k.Key.ToLower() == FunctionName.ToLower()).FirstOrDefault();
-                if (Function.Value != null)
-                {
-                    Function.Value(options);
-                }
-            });*/
-        }
-        public static void SharePointRest(this SPAuthN.Options options, string RequestUrl, Action<Stream> OnSuccess)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(options.SiteUrl + RequestUrl);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ExtendedOptions.Options.SiteUrl + RequestUrl);
             request.Accept = "application/json;odata=verbose";
 
-            foreach (var key in options.Headers.AllKeys)
-            {
-                request.Headers[key] = options.Headers[key];
-            }
+            Request.ApplyAuth(request, ExtendedOptions.Options);
 
             using (HttpWebResponse spResponse = (HttpWebResponse)request.GetResponse())
             {

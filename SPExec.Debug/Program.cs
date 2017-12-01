@@ -19,10 +19,14 @@ namespace SPExec.Debug
                 },
                 { "data", options=>
                     {
-                        var ctx = options.Context;
+                        options.SharePointREST("/_api/web/lists", Stream =>
+                        {
+                            var k = Stream.ConvertToJSON();
+                        });
+                        /*var ctx = options.Context;
                         var Web = ctx.Web;
                         ctx.Load(Web);
-                        ctx.ExecuteQuery();
+                        ctx.ExecuteQuery();*/
 
                         var l = "";
                     }
@@ -64,7 +68,7 @@ namespace SPExec.Debug
                 }
             };
 
-            SharePoint.RunCSOM("--configPath='./configs/private.prod3.json' --forcePrompts=false", fun);
+            SharePoint.Run("--configPath='./configs/private.prod3.json' --forcePrompts=false", fun);
 
             var t = "";
         }

@@ -12,6 +12,38 @@ namespace SPExec
     {
         public static string ExecuteParamsDescription = "Keys of functions to execute with a space like a delimiter";
 
+        public static void ExecuteMappedFunctions(this ExtendedOptions ExtOptions, SPFunctions Functions)
+        {
+            string ExecuteParamsString = ExtOptions.LoadedSettings.custom.executeParams.ToString();
+
+            List<string> FunctionsToExecute = ExecuteParamsString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            FunctionsToExecute.ForEach(FunctionName =>
+            {
+                var Function = Functions.Where(k => k.Key.ToLower() == FunctionName.ToLower()).FirstOrDefault();
+                if (Function.Value != null)
+                {
+                    Function.Value(ExtOptions);
+                }
+            });
+        }
+        public static List<T> ConvertToData<T>(this Stream s)
+        {
+            dynamic ListJsonData = s.ConvertToJSON();
+
+            var text = JsonConvert.SerializeObject(ListJsonData.d.results);
+
+            return JsonConvert.DeserializeObject<List<T>>(text);
+        }
+
+        public static dynamic ConvertToJSON(this Stream s)
+        {
+            var reader = new StreamReader(s);
+            dynamic ListJsonData = JsonConvert.DeserializeObject(reader.ReadToEnd());
+
+            return ListJsonData;
+        }
+
         public static string ModParams(this string Params)
         {
             Params = Params
