@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using Microsoft.SharePoint.Client;
+﻿using Microsoft.SharePoint.Client;
 using SPAuthN;
 using System;
 using System.Collections.Generic;
@@ -12,10 +11,8 @@ namespace SPExec
 {
     public class ExtendedOptions
     {
-        [Option("configPath")]
         public string configPath { get; set; }
 
-        [Option("forcePrompts")]
         public bool forcePrompts { get; set; }
 
         public ClientContext Context { get; set; }
@@ -25,6 +22,37 @@ namespace SPExec
         public Options Options { get; set; }
 
         public dynamic LoadedSettings { get; set; }
+
+        Dictionary<string, object> CmdArgs { get; set; }
+
+        public ExtendedOptions()
+        {
+
+        }
+        public ExtendedOptions(Dictionary<string, object> Args)
+        {
+            CmdArgs = Args;
+
+            Args.Where(arg => arg.Key == "configPath").ToList().ForEach(arg =>
+            {
+                if (!String.IsNullOrEmpty((string)arg.Value))
+                {
+                    configPath = (string)arg.Value;
+                };
+            });
+
+            Args.Where(arg => arg.Key == "forcePrompts").ToList().ForEach(arg =>
+            {
+                bool tryForce = false;
+                Boolean.TryParse(arg.Value.ToString(), out tryForce);
+                forcePrompts = tryForce;
+
+            });
+        }
+        public string GetCmdValue(string key)
+        {
+            return (string)CmdArgs.Where(arg => arg.Key == key).FirstOrDefault().Value;
+        }
 
     }
 }

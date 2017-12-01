@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using Microsoft.SharePoint.Client;
+﻿using Microsoft.SharePoint.Client;
 using Newtonsoft.Json.Linq;
 using SPAuthN;
 using System;
@@ -70,9 +69,7 @@ namespace SPExec
             var ConnectionOptions = SPAuth.GetAuth(args);
 
             var argsArr = args.ModParams().Split(' ');
-            var extoptions = new ExtendedOptions();
-
-            Parser.Default.ParseArguments(argsArr, extoptions);
+            var extoptions = new ExtendedOptions(Extentions.CommandLineParse(argsArr));
 
             dynamic LoadedSettings = Extentions.LoadSettings(extoptions.configPath);
             extoptions.Options = ConnectionOptions;

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,29 @@ namespace SPExec
             var text = JsonConvert.SerializeObject(ListJsonData.d.results);
 
             return JsonConvert.DeserializeObject<List<T>>(text);
+        }
+
+        public static Dictionary<string, Object> CommandLineParse(string args)
+        {
+            return CommandLineParse(args.Split(' '));
+        }
+        public static Dictionary<string, Object> CommandLineParse(string[] args)
+        {
+            var argsObject = new Dictionary<string, Object>();
+            args.ToList().ForEach(arg =>
+            {
+                var paramsArr = arg.Split('=');
+                var paramName = paramsArr[0].Replace("--", "").Replace("-", "");
+                if (paramsArr.Length > 1)
+                {
+                    argsObject[paramName] = paramsArr[1];
+                }
+                else
+                {
+                    argsObject[paramName] = true;
+                }
+            });
+            return argsObject;
         }
 
         public static dynamic ConvertToJSON(this Stream s)

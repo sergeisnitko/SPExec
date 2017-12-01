@@ -19,6 +19,9 @@ namespace SPExec.Debug
                 },
                 { "data", options=>
                     {
+                        var test = options.GetCmdValue("MMMMMMMMM");
+                        var test1 = options.GetCmdValue("MyCustomArg");
+
                         options.SharePointREST("/_api/web/lists", Stream =>
                         {
                             var k = Stream.ConvertToJSON();
@@ -68,7 +71,10 @@ namespace SPExec.Debug
                 }
             };
 
-            SharePoint.Run("--configPath='./configs/private.prod3.json' --forcePrompts=false", fun);
+
+            var kk = Extentions.CommandLineParse("--configPath='./configs/private.prod3.json' --forcePrompts");
+
+            SharePoint.Run("--configPath='./configs/private.prod3.json' --forcePrompts='false' --MyCustomArg='dasdasdasdasdasdsa'", fun);
 
             var t = "";
         }
