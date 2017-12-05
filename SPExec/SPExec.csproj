@@ -91,7 +91,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SPAuthN, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPAuthN.1.1.2\lib\net45\SPAuthN.dll</HintPath>
+      <HintPath>..\packages\SPAuthN.1.1.4\lib\net45\SPAuthN.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
