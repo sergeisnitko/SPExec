@@ -74,7 +74,7 @@ namespace SPExec.Debug
 
             var kk = Extentions.CommandLineParse("--configPath='./configs/private.prod3.json' --forcePrompts");
 
-            SharePoint.Run("--configPath='./configs/private.prod3.json' --forcePrompts='false' --MyCustomArg='dasdasdasdasdasdsa'", fun);
+            SharePoint.Run("--forcePrompts='true' --MyCustomArg='dasdasdasdasdasdsa'", fun);
 
             var t = "";
         }

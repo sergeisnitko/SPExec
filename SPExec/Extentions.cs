@@ -70,12 +70,16 @@ namespace SPExec
 
         public static string ModParams(this string Params)
         {
-            Params = Params
-                .Replace("=true", "")
-                .Replace("='true'", "")
-                .Replace("=True", "")
-                .Replace("='True'", "")
-                ;
+            if (!String.IsNullOrEmpty(Params))
+            {
+                Params = Params
+                    .Replace("=true", "")
+                    .Replace("='true'", "")
+                    .Replace("=True", "")
+                    .Replace("='True'", "")
+                    ;
+            }
+
             return Params;
         }
         public static string ModPath(this string SettingsFileName)
@@ -154,7 +158,7 @@ namespace SPExec
 
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.Write(ConsoleValue);
+            Console.WriteLine(ConsoleValue);
             Console.ResetColor();
 
             return ConsoleValue;

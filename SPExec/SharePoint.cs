@@ -19,7 +19,11 @@ namespace SPExec
 
         public static void Run(string args, SPFunctions Functions)
         {
-            GetParams(args, ExtOptions =>
+            Run(args, null, Functions);
+        }
+        public static void Run(string args, Options ConnectionOptions, SPFunctions Functions)
+        {
+            GetParams(args, ConnectionOptions, ExtOptions =>
             {
                 ExtOptions.ExecuteMappedFunctions(Functions);
 
@@ -27,7 +31,11 @@ namespace SPExec
         }
         public static void RunCSOM(string args, SPFunctions Functions)
         {
-            GetParams(args, ExtOptions =>
+            RunCSOM(args, null, Functions);
+        }
+        public static void RunCSOM(string args, Options ConnectionOptions, SPFunctions Functions)
+        {
+            GetParams(args, ConnectionOptions, ExtOptions =>
             {
                 ExtOptions.SharePointCSOM(ctx =>
                 {
@@ -64,13 +72,22 @@ namespace SPExec
             }
         }
 
-        public static void GetParams(string args, Action<ExtendedOptions> OnSuccess)
+        public static void GetParams(string args,Action<ExtendedOptions> OnSuccess)
         {
             var ConnectionOptions = SPAuth.GetAuth(args);
+            GetParams(args, ConnectionOptions, OnSuccess);
+        }
+
+        public static void GetParams(string args, Options ConnectionOptions, Action<ExtendedOptions> OnSuccess)
+        {
+            if (ConnectionOptions == null)
+            {
+                ConnectionOptions = SPAuth.GetAuth(args);
+            }            
 
             var argsArr = args.ModParams().Split(' ');
             var extoptions = new ExtendedOptions(Extentions.CommandLineParse(argsArr));
-
+            extoptions.configPath = ConnectionOptions.Settings.configPath;
             dynamic LoadedSettings = Extentions.LoadSettings(extoptions.configPath);
             extoptions.Options = ConnectionOptions;
 
