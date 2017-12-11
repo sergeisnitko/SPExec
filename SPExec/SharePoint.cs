@@ -19,29 +19,42 @@ namespace SPExec
 
         public static void Run(string args, SPFunctions Functions)
         {
-            Run(args, null, Functions);
+            CheckShowHelpInformation(Functions, args, () =>
+            {
+                Run(args, null, Functions);
+            });
+            
         }
         public static void Run(string args, Options ConnectionOptions, SPFunctions Functions)
         {
-            GetParams(args, ConnectionOptions, ExtOptions =>
+            CheckShowHelpInformation(Functions, args, () =>
             {
-                ExtOptions.ExecuteMappedFunctions(Functions);
+                GetParams(args, ConnectionOptions, ExtOptions =>
+                {
+                    ExtOptions.ExecuteMappedFunctions(Functions);
 
+                });
             });
         }
         public static void RunCSOM(string args, SPFunctions Functions)
         {
-            RunCSOM(args, null, Functions);
+            CheckShowHelpInformation(Functions, args, () =>
+            {
+                RunCSOM(args, null, Functions);
+            });
         }
         public static void RunCSOM(string args, Options ConnectionOptions, SPFunctions Functions)
         {
-            GetParams(args, ConnectionOptions, ExtOptions =>
+            CheckShowHelpInformation(Functions, args, () =>
             {
-                ExtOptions.SharePointCSOM(ctx =>
+                GetParams(args, ConnectionOptions, ExtOptions =>
                 {
-                    ExtOptions.Context = ctx;
+                    ExtOptions.SharePointCSOM(ctx =>
+                    {
+                        ExtOptions.Context = ctx;
 
-                    ExtOptions.ExecuteMappedFunctions(Functions);
+                        ExtOptions.ExecuteMappedFunctions(Functions);
+                    });
                 });
             });
         }
@@ -111,6 +124,37 @@ namespace SPExec
                 }
 
                 OnSuccess(extoptions);
+            }
+        }
+
+        public static void CheckShowHelpInformation(this SPFunctions Functions, string args, Action Void)
+        {
+            var argsArr = Extentions.CommandLineParse(args);
+            var help = argsArr.Where(k => (k.Key.ToLower() == "help" || k.Key.ToLower() == "?")).FirstOrDefault();
+            if (help.Key != null)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("'ExecuteParams' functions:");
+
+                foreach (var Function in Functions)
+                {
+                    var Name = Function.Key;
+                    var Description = Function.Description;
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(Name);
+                    if (!String.IsNullOrEmpty(Description))
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write(" - " + Description);
+                    }
+                    Console.WriteLine();
+                }
+
+                Console.ResetColor();
+            }
+            else
+            {
+                Void();
             }
         }
     }

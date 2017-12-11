@@ -22,12 +22,13 @@ namespace SPExec
             FunctionsToExecute.ForEach(FunctionName =>
             {
                 var Function = Functions.Where(k => k.Key.ToLower() == FunctionName.ToLower()).FirstOrDefault();
-                if (Function.Value != null)
+                if (Function.Void != null)
                 {
-                    Function.Value(ExtOptions);
+                    Function.Void(ExtOptions);
                 }
             });
         }
+
         public static List<T> ConvertToData<T>(this Stream s)
         {
             dynamic ListJsonData = s.ConvertToJSON();

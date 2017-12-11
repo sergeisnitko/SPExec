@@ -39,7 +39,7 @@ namespace SPExec.Debug
                         var l = "";
                     }
                 },
-                { "divarts", options=>
+                { "divarts", "Description of divarts",options=>
                     {
                         var l = "";
                     }
@@ -54,7 +54,7 @@ namespace SPExec.Debug
                         var l = "";
                     }
                 },
-                { "divlists", options=>
+                { "divlists", "Description of divlists", options=>
                     {
                         var l = "";
                     }
@@ -72,7 +72,6 @@ namespace SPExec.Debug
             };
 
 
-            var kk = Extentions.CommandLineParse("--configPath='./configs/private.prod3.json' --forcePrompts");
 
             SharePoint.Run("--forcePrompts='true' --MyCustomArg='dasdasdasdasdasdsa'", fun);
 
