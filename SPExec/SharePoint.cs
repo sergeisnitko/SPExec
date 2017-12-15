@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using SPAuthN;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -99,29 +100,50 @@ namespace SPExec
             }            
 
             var argsArr = args.ModParams().Split(' ');
-            var extoptions = new ExtendedOptions(Extentions.CommandLineParse(argsArr));
+            var ParsedArgs = Extentions.CommandLineParse(argsArr);
+
+            var extoptions = new ExtendedOptions(ParsedArgs);
             extoptions.configPath = ConnectionOptions.Settings.configPath;
             dynamic LoadedSettings = Extentions.LoadSettings(extoptions.configPath);
             extoptions.Options = ConnectionOptions;
 
             if (LoadedSettings != null)
             {
-                LoadedSettings.custom = LoadedSettings.custom != null ? LoadedSettings.custom : JObject.Parse("{'executeParams': null}");
-                var CustomProperties = LoadedSettings.custom;
 
-                var ExecuteParams = CustomProperties.executeParams;
+                LoadedSettings = Extentions.AddExpandoProperty(LoadedSettings, "custom");
+                var CustomProperties = Extentions.AddExpandoProperty(LoadedSettings["custom"], "executeParams", false);
+
+                
+                var ExecuteParams = CustomProperties["executeParams"];
+
+                foreach (var ParsedArg in ParsedArgs)
+                {
+                    if (ParsedArg.Key.ToLower().IndexOf("custom.") != -1)
+                    {
+                        //CustomProperties.Add(ParsedArg.Key.Replace("custom.","").Trim(), ParsedArg.Value);
+                        CustomProperties = Extentions.AddExpandoProperty(CustomProperties, ParsedArg.Key.Replace("custom.", "").Trim(), ParsedArg.Value);
+                    }
+                }
+                LoadedSettings["custom"] = CustomProperties;
+
                 extoptions.LoadedSettings = LoadedSettings;
 
                 var forcePrompts = extoptions.forcePrompts || ExecuteParams == null;
                 if (forcePrompts)
                 {
-                    CustomProperties.executeParams = Extentions.InlineParam(Extentions.ExecuteParamsDescription, ExecuteParams.ToString());
-                    Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
+                    List<string> CustomPropertiesKeys = new List<string>(CustomProperties.Keys);
+
+                    foreach (var CustomPropertyKey in CustomPropertiesKeys)
+                    {
+                        var Description = CustomPropertyKey == "executeParams" ? Extentions.ExecuteParamsDescription : CustomPropertyKey;
+                        CustomProperties[CustomPropertyKey] = Extentions.InlineParam(Description, CustomProperties[CustomPropertyKey].ToString());
+                    }                                        
                 }
                 else
                 {
                     Extentions.EchoParams(extoptions);
                 }
+                Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
 
                 OnSuccess(extoptions);
             }

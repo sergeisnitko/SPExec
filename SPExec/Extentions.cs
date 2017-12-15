@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -13,9 +14,61 @@ namespace SPExec
     {
         public static string ExecuteParamsDescription = "Keys of functions to execute with a space like a delimiter";
 
+        public static dynamic AddExpandoProperty(object expando, string propertyName, object propertyValue)
+        {
+            Dictionary<string, object> expandoDict = null;
+
+            if (expando.GetType() == typeof(JObject))
+            {
+                expandoDict = (expando as JObject).ToObject<Dictionary<string, object>>();
+            }
+            if (expando.GetType() == typeof(Dictionary<string, object>))
+            {
+                expandoDict = expando as Dictionary<string, object>;
+            }
+
+            if (expandoDict.ContainsKey(propertyName))
+            {
+                expandoDict[propertyName] = propertyValue;
+            }
+            else
+            {
+                expandoDict.Add(propertyName, propertyValue);
+            }
+
+            return expandoDict;
+        }
+        public static dynamic AddExpandoProperty(object expando, string propertyName, bool Dictionary = true)
+        {
+            Dictionary<string, object> expandoDict = null;
+
+            if (expando.GetType() == typeof(JObject))
+            {
+                expandoDict = (expando as JObject).ToObject<Dictionary<string, object>>();
+            }
+            if (expando.GetType() == typeof(Dictionary<string, object>))
+            {
+                expandoDict = expando as Dictionary<string, object>;
+            }
+
+            //var expandoDict = expando as IDictionary<string, object>;
+            if (!expandoDict.ContainsKey(propertyName))
+            {
+                if (Dictionary)
+                {
+                    expandoDict.Add(propertyName, new Dictionary<string, object>());
+                }
+                else
+                {
+                    expandoDict.Add(propertyName, "");
+                }
+                
+            }
+            return expandoDict;
+        }
         public static void ExecuteMappedFunctions(this ExtendedOptions ExtOptions, SPFunctions Functions)
         {
-            string ExecuteParamsString = ExtOptions.LoadedSettings.custom.executeParams.ToString();
+            string ExecuteParamsString = ExtOptions.LoadedSettings["custom"]["executeParams"].ToString();
 
             List<string> FunctionsToExecute = ExecuteParamsString.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -168,13 +221,13 @@ namespace SPExec
         public static void EchoParams(ExtendedOptions Options)
         {
             Console.Clear();
-            InlineParam("SharePoint URL", Options.LoadedSettings.siteUrl.ToString(), false);
+            InlineParam("SharePoint URL", Options.LoadedSettings["siteUrl"].ToString(), false);
             Console.WriteLine();
-            InlineParam("Strategy", Options.LoadedSettings.strategy.ToString(), false);
+            InlineParam("Strategy", Options.LoadedSettings["strategy"].ToString(), false);
             Console.WriteLine();
-            InlineParam("User name", Options.LoadedSettings.username.ToString(), false);
+            InlineParam("User name", Options.LoadedSettings["username"].ToString(), false);
             Console.WriteLine();
-            InlineParam(ExecuteParamsDescription, Options.LoadedSettings.custom.executeParams.ToString(), false);
+            InlineParam(ExecuteParamsDescription, Options.LoadedSettings["custom"]["executeParams"].ToString(), false);
             Console.WriteLine();
         }
         public static dynamic LoadSettings(string SettingsFileName)

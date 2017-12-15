@@ -10,6 +10,7 @@ namespace SPExec.Debug
     {
         static void Main(string[] args)
         {
+
             var fun = new SPFunctions()
             {
                 { "artefacts", options=>
@@ -19,28 +20,18 @@ namespace SPExec.Debug
                 },
                 { "data", options=>
                     {
-                        var test = options.GetCmdValue("MMMMMMMMM");
-                        var test1 = options.GetCmdValue("MyCustomArg");
-
-                        options.SharePointREST("/_api/web/lists", Stream =>
-                        {
-                            var k = Stream.ConvertToJSON();
-                        });
-                        /*var ctx = options.Context;
-                        var Web = ctx.Web;
-                        ctx.Load(Web);
-                        ctx.ExecuteQuery();*/
-
                         var l = "";
                     }
                 },
-                { "full", options=>
+                { "full", "KJNKJNKJN", options=>
                     {
                         var l = "";
                     }
                 },
                 { "divarts", "Description of divarts",options=>
                     {
+                        var MyCustomArg2 = options.LoadedSettings["custom"]["MyCustomArg2"];
+                        var MyCustomArg5 = options.LoadedSettings["custom"]["MyCustomArg5"];
                         var l = "";
                     }
                 },
@@ -73,7 +64,7 @@ namespace SPExec.Debug
 
 
 
-            SharePoint.Run("--forcePrompts='true' --MyCustomArg='dasdasdasdasdasdsa'", fun);
+            SharePoint.Run("--forcePrompts='true' --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun);
 
             var t = "";
         }
