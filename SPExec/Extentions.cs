@@ -14,7 +14,11 @@ namespace SPExec
     {
         public static string ExecuteParamsDescription = "Keys of functions to execute with a space like a delimiter";
 
-        public static dynamic AddExpandoProperty(object expando, string propertyName, object propertyValue)
+        public static string StringValueOrEmpty(this object Value)
+        {
+            return Value != null ? Value.ToString() : "";
+        }
+        public static Dictionary<string, object> ConvertExpandoToDict(dynamic expando)
         {
             Dictionary<string, object> expandoDict = null;
 
@@ -26,6 +30,11 @@ namespace SPExec
             {
                 expandoDict = expando as Dictionary<string, object>;
             }
+            return expandoDict;
+        }
+        public static dynamic AddExpandoProperty(object expando, string propertyName, object propertyValue)
+        {
+            Dictionary<string, object> expandoDict = ConvertExpandoToDict(expando);
 
             if (expandoDict.ContainsKey(propertyName))
             {
@@ -40,16 +49,7 @@ namespace SPExec
         }
         public static dynamic AddExpandoProperty(object expando, string propertyName, bool Dictionary = true)
         {
-            Dictionary<string, object> expandoDict = null;
-
-            if (expando.GetType() == typeof(JObject))
-            {
-                expandoDict = (expando as JObject).ToObject<Dictionary<string, object>>();
-            }
-            if (expando.GetType() == typeof(Dictionary<string, object>))
-            {
-                expandoDict = expando as Dictionary<string, object>;
-            }
+            Dictionary<string, object> expandoDict = ConvertExpandoToDict(expando);
 
             //var expandoDict = expando as IDictionary<string, object>;
             if (!expandoDict.ContainsKey(propertyName))

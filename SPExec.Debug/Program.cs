@@ -30,6 +30,9 @@ namespace SPExec.Debug
                 },
                 { "divarts", "Description of divarts",options=>
                     {
+
+                        options.EnsureCustomParam("Test4");
+
                         var MyCustomArg2 = options.LoadedSettings["custom"]["MyCustomArg2"];
                         var MyCustomArg5 = options.LoadedSettings["custom"]["MyCustomArg5"];
                         var l = "";
@@ -64,7 +67,7 @@ namespace SPExec.Debug
 
 
 
-            SharePoint.Run("--forcePrompts='true' --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun);
+            SharePoint.Run("--forcePrompts='false' --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun);
 
             var t = "";
         }

@@ -149,6 +149,28 @@ namespace SPExec
             }
         }
 
+        public static void EnsureCustomParam(this ExtendedOptions ExOptions, string ParamName)
+        {
+            var ConnectionOptions = ExOptions.Options;
+
+            dynamic LoadedSettings = Extentions.LoadSettings(ConnectionOptions.Settings.configPath);
+            dynamic CustomProperties = LoadedSettings["custom"];
+            var forcePrompts = ConnectionOptions.Settings.forcePrompts;
+
+
+            ParamName = ParamName.Replace("custom.", "");
+
+            var CustomPropertiesDict = Extentions.ConvertExpandoToDict(CustomProperties);
+            var CurrentValue = "";
+
+            if (!CustomPropertiesDict.ContainsKey(ParamName))
+            {
+                CustomProperties[ParamName] = Extentions.InlineParam(ParamName, CurrentValue);
+            }
+
+            Extentions.SaveSettings(LoadedSettings, ConnectionOptions.Settings.configPath);
+            ExOptions.LoadedSettings = LoadedSettings;
+        }
         public static void CheckShowHelpInformation(this SPFunctions Functions, string args, Action Void)
         {
             var argsArr = Extentions.CommandLineParse(args);
