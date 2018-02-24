@@ -224,8 +224,8 @@ namespace SPExec
             InlineParam("SharePoint URL", Options.LoadedSettings["siteUrl"].ToString(), false);
             Console.WriteLine();
             InlineParam("Strategy", Options.LoadedSettings["strategy"].ToString(), false);
-            Console.WriteLine();
-            InlineParam("User name", Options.LoadedSettings["username"].ToString(), false);
+            // Console.WriteLine();
+            // InlineParam("User name", Options.LoadedSettings["username"].ToString(), false);
             Console.WriteLine();
             InlineParam(ExecuteParamsDescription, Options.LoadedSettings["custom"]["executeParams"].ToString(), false);
             Console.WriteLine();
