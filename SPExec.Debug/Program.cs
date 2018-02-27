@@ -64,8 +64,9 @@ namespace SPExec.Debug
                     }
                 }
             };
-            
-            //SharePoint.Run("--forcePrompts='true' --custom.MyCustomArg6='dasdasdasdasdasdsa' --siteUrl='http://ssssss'", fun);
+
+            SharePoint.Run("--forcePrompts='true' --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun);
+            // SharePoint.Run(" ", fun);
 
             var t = "";
         }

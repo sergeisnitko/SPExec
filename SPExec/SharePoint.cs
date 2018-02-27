@@ -126,9 +126,10 @@ namespace SPExec
                 }
                 LoadedSettings["custom"] = CustomProperties;
 
+
                 extoptions.LoadedSettings = LoadedSettings;
 
-                var forcePrompts = extoptions.forcePrompts || ExecuteParams == null;
+                var forcePrompts = extoptions.forcePrompts || String.IsNullOrEmpty(ExecuteParams);
                 if (forcePrompts)
                 {
                     List<string> CustomPropertiesKeys = new List<string>(CustomProperties.Keys);
@@ -155,7 +156,7 @@ namespace SPExec
 
             dynamic LoadedSettings = Extentions.LoadSettings(ConnectionOptions.Settings.configPath);
             dynamic CustomProperties = LoadedSettings["custom"];
-            var forcePrompts = ConnectionOptions.Settings.forcePrompts;
+            // var forcePrompts = ConnectionOptions.Settings.forcePrompts;
 
 
             ParamName = ParamName.Replace("custom.", "");
