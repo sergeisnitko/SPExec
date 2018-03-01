@@ -75,9 +75,15 @@ namespace SPExec
             FunctionsToExecute.ForEach(FunctionName =>
             {
                 var Function = Functions.Where(k => k.Key.ToLower() == FunctionName.ToLower()).FirstOrDefault();
-                if (Function.Void != null)
+                if (Function != null && Function.Void != null)
                 {
                     Function.Void(ExtOptions);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("There is no function for key " + FunctionName);
+                    Console.ResetColor();
                 }
             });
         }
@@ -93,7 +99,8 @@ namespace SPExec
 
         public static Dictionary<string, Object> CommandLineParse(string args)
         {
-            return CommandLineParse(args.Split(' '));
+            args = args.Replace("--", "-");
+            return CommandLineParse(args.Split(new string[] { " -" }, StringSplitOptions.None));
         }
         public static Dictionary<string, Object> CommandLineParse(string[] args)
         {
@@ -104,7 +111,7 @@ namespace SPExec
                 var paramName = paramsArr[0].Replace("--", "").Replace("-", "");
                 if (paramsArr.Length > 1)
                 {
-                    argsObject[paramName] = paramsArr[1];
+                    argsObject[paramName] = TrimQuotes(paramsArr[1]);
                 }
                 else
                 {
@@ -121,7 +128,23 @@ namespace SPExec
 
             return ListJsonData;
         }
+        public static string TrimQuotes(this object InputValue)
+        {
+            return TrimQuotes((string)InputValue);
+        }
+        public static string TrimQuotes(this string InputValue)
+        {
+            if (String.IsNullOrEmpty(InputValue))
+                return "";
 
+            InputValue = InputValue.StartsWith("'") ? InputValue.Substring(1) : InputValue;
+            InputValue = InputValue.StartsWith("\"") ? InputValue.Substring(1) : InputValue;
+            InputValue = InputValue.EndsWith("'") ? InputValue.Substring(0, InputValue.Length - 1) : InputValue;
+            InputValue = InputValue.EndsWith("\"") ? InputValue.Substring(0, InputValue.Length - 1) : InputValue;
+
+            return InputValue;
+
+        }
         public static string ModParams(this string Params)
         {
             if (!String.IsNullOrEmpty(Params))

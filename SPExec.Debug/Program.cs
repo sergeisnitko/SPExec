@@ -65,8 +65,8 @@ namespace SPExec.Debug
                 }
             };
 
-            SharePoint.Run("--forcePrompts='true' --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun);
-            // SharePoint.Run(" ", fun);
+            //SharePoint.Run("--forcePrompts='true' --custom.MyCustomArg6='dasdasdasdasdasdsa' --custom.executeParams='UUUUU JJJJJ'", fun);
+            SharePoint.RunCSOM(string.Join(" ", args), fun);
 
             var t = "";
         }

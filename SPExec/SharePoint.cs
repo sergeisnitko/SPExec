@@ -99,8 +99,8 @@ namespace SPExec
                 ConnectionOptions = SPAuth.GetAuth(args);
             }            
 
-            var argsArr = args.ModParams().Split(' ');
-            var ParsedArgs = Extentions.CommandLineParse(argsArr);
+            // var argsArr = args.ModParams().Split(' ');
+            var ParsedArgs = Extentions.CommandLineParse(args.ModParams());
 
             var extoptions = new ExtendedOptions(ParsedArgs);
             extoptions.configPath = ConnectionOptions.Settings.configPath;
@@ -112,9 +112,7 @@ namespace SPExec
 
                 LoadedSettings = Extentions.AddExpandoProperty(LoadedSettings, "custom");
                 var CustomProperties = Extentions.AddExpandoProperty(LoadedSettings["custom"], "executeParams", false);
-
-                
-                var ExecuteParams = CustomProperties["executeParams"];
+               
 
                 foreach (var ParsedArg in ParsedArgs)
                 {
@@ -126,8 +124,9 @@ namespace SPExec
                 }
                 LoadedSettings["custom"] = CustomProperties;
 
-
                 extoptions.LoadedSettings = LoadedSettings;
+
+                var ExecuteParams = CustomProperties["executeParams"];
 
                 var forcePrompts = extoptions.forcePrompts || String.IsNullOrEmpty(ExecuteParams);
                 if (forcePrompts)
