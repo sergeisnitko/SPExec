@@ -30,7 +30,7 @@ namespace SPExec
         {
             CheckShowHelpInformation(Functions, args, () =>
             {
-                GetParams(args, ConnectionOptions, ExtOptions =>
+                GetParams(args, ConnectionOptions, Functions, ExtOptions =>
                 {
                     ExtOptions.ExecuteMappedFunctions(Functions);
 
@@ -48,7 +48,7 @@ namespace SPExec
         {
             CheckShowHelpInformation(Functions, args, () =>
             {
-                GetParams(args, ConnectionOptions, ExtOptions =>
+                GetParams(args, ConnectionOptions, Functions, ExtOptions =>
                 {
                     ExtOptions.SharePointCSOM(ctx =>
                     {
@@ -86,13 +86,13 @@ namespace SPExec
             }
         }
 
-        public static void GetParams(string args,Action<ExtendedOptions> OnSuccess)
-        {
-            var ConnectionOptions = SPAuth.GetAuth(args);
-            GetParams(args, ConnectionOptions, OnSuccess);
-        }
+        //public static void GetParams(string args,Action<ExtendedOptions> OnSuccess)
+        //{
+        //    var ConnectionOptions = SPAuth.GetAuth(args);
+        //    GetParams(args, ConnectionOptions, OnSuccess);
+        //}
 
-        public static void GetParams(string args, Options ConnectionOptions, Action<ExtendedOptions> OnSuccess)
+        public static void GetParams(string args, Options ConnectionOptions, SPFunctions Functions, Action<ExtendedOptions> OnSuccess)
         {
             if (ConnectionOptions == null)
             {
@@ -135,8 +135,16 @@ namespace SPExec
 
                     foreach (var CustomPropertyKey in CustomPropertiesKeys)
                     {
-                        var Description = CustomPropertyKey == "executeParams" ? Extentions.ExecuteParamsDescription : CustomPropertyKey;
-                        CustomProperties[CustomPropertyKey] = Extentions.InlineParam(Description, CustomProperties[CustomPropertyKey].ToString());
+                        var Description = CustomPropertyKey;
+                        if (CustomPropertyKey == "executeParams")
+                        {
+                            Description = Extentions.ExecuteParamsDescription;
+                            CustomProperties[CustomPropertyKey] = Extentions.InlineMenu(Functions, Description, CustomProperties[CustomPropertyKey].ToString());
+                        }
+                        else
+                        {
+                            CustomProperties[CustomPropertyKey] = Extentions.InlineParam(Description, CustomProperties[CustomPropertyKey].ToString());
+                        }                        
                     }                                        
                 }
                 else
