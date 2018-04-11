@@ -200,6 +200,8 @@ namespace SPExec
 
         public static string InlineMenu(SPFunctions Functions, string Description, string DefaultValue)
         {
+            Console.CursorVisible = false;
+
             var TopPosition = Console.CursorTop;
 
             var Value = "";
@@ -320,6 +322,8 @@ namespace SPExec
                     }
                 }
             }
+            Console.CursorVisible = true;
+
             return Value;
         }
 
