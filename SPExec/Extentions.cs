@@ -275,6 +275,7 @@ namespace SPExec
                     Console.Write(Description + " ");
                     Console.ForegroundColor = ConsoleColor.DarkCyan;
                     Console.Write(Value);
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine();
                     ClearCurrentConsoleLine(StartedPosition);
 
