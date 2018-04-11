@@ -220,6 +220,10 @@ namespace SPExec
             
             Console.WriteLine();
             var ConsoleValue = DefaultValue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).Where(x=> Functions.FirstOrDefault(y=>y.Key == x) != null).ToList();
+            if (ConsoleValue.Count > 0)
+            {
+                SelectedValue = ConsoleValue[0];
+            }
 
             var StartedPosition = Console.CursorTop;
             while (true)
