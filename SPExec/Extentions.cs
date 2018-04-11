@@ -198,12 +198,15 @@ namespace SPExec
             return Value;
         }
 
-        public static string InlineMenu(SPFunctions Functions, string Description, string DefaultValue, bool WaitInput = true)
+        public static string InlineMenu(SPFunctions Functions, string Description, string DefaultValue)
         {
+            var TopPosition = Console.CursorTop;
+
+            var Value = "";
             var SelectedValue = Functions[0].Key;
 
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write(WaitInput ? "? " : "! ");
+            Console.Write("? ");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Description + " ");
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -251,7 +254,7 @@ namespace SPExec
                     Console.Write(Name);
                     if (!String.IsNullOrEmpty(InDescription))
                     {
-                        Console.Write(" (" + Description+") ");
+                        Console.Write(" (" + InDescription + ") ");
                     }
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine();
@@ -264,6 +267,24 @@ namespace SPExec
                 ConsoleKeyInfo i = Console.ReadKey(true);
                 if (i.Key == ConsoleKey.Enter)
                 {
+                    Value = String.Join(" ", ConsoleValue.ToArray());
+                    ClearCurrentConsoleLine(TopPosition);
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write("? ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(Description + " ");
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write(Value);
+                    Console.WriteLine();
+                    ClearCurrentConsoleLine(StartedPosition);
+
+                    Functions.ForEach(f=>
+                    {
+                        ClearCurrentConsoleLine();
+                        Console.WriteLine();
+                    });
+                    Console.SetCursorPosition(0, StartedPosition);
+
                     break;
                 }
                 if (i.Key == ConsoleKey.DownArrow)
@@ -298,7 +319,7 @@ namespace SPExec
                     }
                 }
             }
-            return String.Join(" ", ConsoleValue.ToArray());
+            return Value;
         }
 
         public static string InlineParam(string Description, string DefaultValue, bool WaitInput=true)
@@ -347,7 +368,7 @@ namespace SPExec
         public static void ClearCurrentConsoleLine(int CursorTop = -1)
         {
             int currentLineCursor = CursorTop != -1 ? CursorTop : Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.SetCursorPosition(0, currentLineCursor);
             Console.Write(new string(' ', Console.WindowWidth));
             Console.SetCursorPosition(0, currentLineCursor);
         }
