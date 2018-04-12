@@ -102,6 +102,17 @@ namespace SPExec
             args = args.Replace("--", "-");
             return CommandLineParse(args.Split(new string[] { " -" }, StringSplitOptions.None));
         }
+
+        public static string CommandLineJoin(Dictionary<string, Object> args)
+        {
+            var inArgs = new List<string>();
+            foreach(var arg in args)
+            {
+                inArgs.Add("--" + arg.Key + "='" + arg.Value.StringValueOrEmpty() + "'");
+            }
+            return string.Join(" ", inArgs);
+        }
+
         public static Dictionary<string, Object> CommandLineParse(string[] args)
         {
             var argsObject = new Dictionary<string, Object>();
@@ -384,9 +395,9 @@ namespace SPExec
         public static void EchoParams(ExtendedOptions Options)
         {
             Console.Clear();
-            InlineParam("SharePoint URL", Options.LoadedSettings["siteUrl"].ToString(), false);
+            InlineParam("SharePoint URL", Options.Options.SiteUrl.ToString(), false);
             Console.WriteLine();
-            InlineParam("Strategy", Options.LoadedSettings["strategy"].ToString(), false);
+            InlineParam("Strategy", Options.Options.Strategy.ToString(), false);
             // Console.WriteLine();
             // InlineParam("User name", Options.LoadedSettings["username"].ToString(), false);
             Console.WriteLine();

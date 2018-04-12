@@ -95,20 +95,16 @@ namespace SPExec
             }
         }
 
-        //public static void GetParams(string args,Action<ExtendedOptions> OnSuccess)
-        //{
-        //    var ConnectionOptions = SPAuth.GetAuth(args);
-        //    GetParams(args, ConnectionOptions, OnSuccess);
-        //}
-
         public static void GetParams(string args, Options ConnectionOptions, SPFunctions Functions, Action<ExtendedOptions> OnSuccess)
         {
+            var tempArgs = Extentions.CommandLineParse(args);
+            args = Extentions.CommandLineJoin(tempArgs);
+
             if (ConnectionOptions == null)
             {
                 ConnectionOptions = SPAuth.GetAuth(args);
             }
 
-            // var argsArr = args.ModParams().Split(' ');
             var saveConfigOnDisk = (bool)ConnectionOptions.Settings.saveConfigOnDisk;
 
             var ParsedArgs = Extentions.CommandLineParse(args.ModParams());
