@@ -18,16 +18,20 @@ namespace SPExec
     {
         public static string SystemPath = HttpUtility.UrlDecode(Path.GetDirectoryName((new System.Uri(Assembly.GetExecutingAssembly().CodeBase)).AbsolutePath));
 
-        public static void Run(string args, SPFunctions Functions)
+        public static void Run(string args, SPFunctions Functions, string Description = "")
         {
+            Description.Echo();
+
             CheckShowHelpInformation(Functions, args, () =>
             {
                 Run(args, null, Functions);
             });
             
         }
-        public static void Run(string args, Options ConnectionOptions, SPFunctions Functions)
+        public static void Run(string args, Options ConnectionOptions, SPFunctions Functions, string Description = "")
         {
+            Description.Echo();
+
             CheckShowHelpInformation(Functions, args, () =>
             {
                 GetParams(args, ConnectionOptions, Functions, ExtOptions =>
@@ -37,15 +41,19 @@ namespace SPExec
                 });
             });
         }
-        public static void RunCSOM(string args, SPFunctions Functions)
+        public static void RunCSOM(string args, SPFunctions Functions, string Description = "")
         {
+            Description.Echo();
+
             CheckShowHelpInformation(Functions, args, () =>
             {
                 RunCSOM(args, null, Functions);
             });
         }
-        public static void RunCSOM(string args, Options ConnectionOptions, SPFunctions Functions)
+        public static void RunCSOM(string args, Options ConnectionOptions, SPFunctions Functions, string Description = "")
         {
+            Description.Echo();
+
             CheckShowHelpInformation(Functions, args, () =>
             {
                 GetParams(args, ConnectionOptions, Functions, ExtOptions =>
@@ -179,6 +187,14 @@ namespace SPExec
             Extentions.SaveSettings(LoadedSettings, ConnectionOptions.Settings.configPath);
             ExOptions.LoadedSettings = LoadedSettings;
         }
+        public static void Echo(this string Value)
+        {
+            if (!String.IsNullOrEmpty(Value))
+            {
+                Console.WriteLine(Value);
+            }            
+        }
+
         public static void CheckShowHelpInformation(this SPFunctions Functions, string args, Action Void)
         {
             var argsArr = Extentions.CommandLineParse(args);

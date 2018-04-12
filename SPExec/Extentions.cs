@@ -12,7 +12,7 @@ namespace SPExec
 {
     public static class Extentions
     {
-        public static string ExecuteParamsDescription = "Keys of functions to execute with a space like a delimiter";
+        public static string ExecuteParamsDescription = "Functions to execute. Use 'Spacebar' to select. 'Enter' to execute ";
 
         public static string StringValueOrEmpty(this object Value)
         {
@@ -137,12 +137,12 @@ namespace SPExec
             if (String.IsNullOrEmpty(InputValue))
                 return "";
 
-            InputValue = InputValue.StartsWith("'") ? InputValue.Substring(1) : InputValue;
-            InputValue = InputValue.StartsWith("\"") ? InputValue.Substring(1) : InputValue;
-            InputValue = InputValue.EndsWith("'") ? InputValue.Substring(0, InputValue.Length - 1) : InputValue;
-            InputValue = InputValue.EndsWith("\"") ? InputValue.Substring(0, InputValue.Length - 1) : InputValue;
+            //InputValue = InputValue.StartsWith("'") ? InputValue.Substring(1) : InputValue;
+            //InputValue = InputValue.StartsWith("\"") ? InputValue.Substring(1) : InputValue;
+            //InputValue = InputValue.EndsWith("'") ? InputValue.Substring(0, InputValue.Length - 1) : InputValue;
+            //InputValue = InputValue.EndsWith("\"") ? InputValue.Substring(0, InputValue.Length - 1) : InputValue;
 
-            return InputValue;
+            return InputValue.Replace("'","").Replace("\"", "").Trim();
 
         }
         public static string ModParams(this string Params)
