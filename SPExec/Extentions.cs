@@ -394,15 +394,15 @@ namespace SPExec
         }
         public static void EchoParams(ExtendedOptions Options)
         {
-            Console.Clear();
-            InlineParam("SharePoint URL", Options.Options.SiteUrl.ToString(), false);
-            Console.WriteLine();
-            InlineParam("Strategy", Options.Options.Strategy.ToString(), false);
-            // Console.WriteLine();
-            // InlineParam("User name", Options.LoadedSettings["username"].ToString(), false);
-            Console.WriteLine();
-            InlineParam(ExecuteParamsDescription, Options.LoadedSettings["custom"]["executeParams"].ToString(), false);
-            Console.WriteLine();
+            //Console.Clear();
+            //InlineParam("SharePoint URL", Options.Options.SiteUrl.ToString(), false);
+            //Console.WriteLine();
+            //InlineParam("Strategy", Options.Options.Strategy.ToString(), false);
+            //// Console.WriteLine();
+            //// InlineParam("User name", Options.LoadedSettings["username"].ToString(), false);
+            //Console.WriteLine();
+            //InlineParam(ExecuteParamsDescription, Options.LoadedSettings["custom"]["executeParams"].ToString(), false);
+            //Console.WriteLine();
         }
         public static dynamic LoadSettings(string SettingsFileName)
         {
