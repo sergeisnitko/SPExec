@@ -1,4 +1,5 @@
 ﻿using Microsoft.SharePoint.Client;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SPAuthN;
 using System;
@@ -105,15 +106,17 @@ namespace SPExec
             if (ConnectionOptions == null)
             {
                 ConnectionOptions = SPAuth.GetAuth(args);
-            }            
+            }
 
             // var argsArr = args.ModParams().Split(' ');
+            var saveConfigOnDisk = (bool)ConnectionOptions.Settings.saveConfigOnDisk;
+
             var ParsedArgs = Extentions.CommandLineParse(args.ModParams());
 
             var extoptions = new ExtendedOptions(ParsedArgs);
             extoptions.configPath = ConnectionOptions.Settings.configPath;
-            dynamic LoadedSettings = Extentions.LoadSettings(extoptions.configPath);
             extoptions.Options = ConnectionOptions;
+            dynamic LoadedSettings = saveConfigOnDisk ? Extentions.LoadSettings(extoptions.configPath) : JsonConvert.DeserializeObject<dynamic>("{}");
 
             if (LoadedSettings != null)
             {
@@ -159,7 +162,10 @@ namespace SPExec
                 {
                     Extentions.EchoParams(extoptions);
                 }
-                Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
+                if (saveConfigOnDisk)
+                {
+                    Extentions.SaveSettings(LoadedSettings, extoptions.configPath);
+                }                
 
                 OnSuccess(extoptions);
             }

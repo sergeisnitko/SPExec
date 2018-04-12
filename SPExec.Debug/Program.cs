@@ -65,7 +65,7 @@ namespace SPExec.Debug
                 }
             };
 
-            SharePoint.Run("--forcePrompts='true' --saveConfigOnDisk=true --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun, "Test Execution functions...");
+            SharePoint.Run("--forcePrompts='true' --saveConfigOnDisk=false --custom.MyCustomArg6='dasdasdasdasdasdsa'", fun, "Test Execution functions...");
             //SharePoint.RunCSOM(string.Join(" ", args), fun);
 
             var t = "";
