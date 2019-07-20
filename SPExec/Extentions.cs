@@ -118,7 +118,7 @@ namespace SPExec
             var argsObject = new Dictionary<string, Object>();
             args.ToList().ForEach(arg =>
             {
-                var paramsArr = arg.Split('=');
+                var paramsArr = arg.Split(new char[] { '=' }, 2);
                 var paramName = paramsArr[0].Replace("--", "").Replace("-", "");
                 if (paramsArr.Length > 1)
                 {
